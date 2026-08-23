@@ -108,10 +108,11 @@
     return null;
   }
 
-  // LinkedIn her gönderi kartına görünmez bir sıra etiketi koyar:
-  // "Akış gönderi numarası 965" / "Feed post number 965". Bu numara kartın TÜM
-  // listedeki sırasıdır — sayfada 452 kart yüklüyken bile 965'i görebilirsin.
-  // Yani en büyük numara ≈ toplam gönderi sayısı. Saymanın en ucuz yolu.
+  // Kartları saymak eksik sayar: LinkedIn eskileri DOM'dan atıyor, sayfada hep
+  // birkaç yüz kart kalıyor. Ama her karta vurduğu görünmez damga — "Akış gönderi
+  // numarası N" / "Feed post number N" — atılmıyor ve sayfa açık kaldıkça büyüyor.
+  // Gerçek bir hesapta DOM'da 452 kart varken damgalar 965'e ulaşmıştı.
+  // Not: anlamlı olması için sona kadar kaydırmak şart; tek bakış yanıltır.
   function enBuyukSira() {
     const kalip = /(?:gönderi numarası|post number|publicación número|beitrag nummer)\s*(\d+)/gi;
     const metin = (document.body.innerText || "") + " " + etiketMetinleri();

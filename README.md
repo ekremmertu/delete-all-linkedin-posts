@@ -34,19 +34,25 @@ Measured on a real account: the page reported "37 posts left" — after a reload
 | Survives a page reload | ✗ | ✓ state in `chrome.storage` |
 | Non-English UI | ✗ matches the word "Delete" | ✓ language-independent CSS selectors first, text as fallback |
 | Dry run | sometimes | ✓ **default on** — counts before it destroys anything |
-| Knows the real total | ✗ | ✓ reads LinkedIn's own post index (see below) |
+| Counts before deleting | ✗ | ✓ reads LinkedIn's own render index, which survives DOM recycling |
 | Stop button | sometimes | ✓ takes effect on the next post |
 
 ### Counting without touching anything
 
-LinkedIn stamps every card with a hidden label — *"Feed post number 965"* — and
-that number is the card's position in the **whole** list, not in what is
-currently loaded. On a real account the page held 452 cards while the labels
-already ran to 965. So the largest number on the page is a good estimate of your
-total, and reading it costs one scroll instead of opening a thousand menus.
+Counting the cards on the page undercounts badly. LinkedIn recycles them: it
+throws old cards out of the DOM as you scroll, so no matter how far you go the
+page holds only a few hundred at a time.
 
-That is what **Count first** does: it scrolls to the bottom, reads the highest
-index, and stops. Nothing is clicked, nothing is deleted.
+The hidden label on each card does not get recycled. LinkedIn stamps every card
+it renders with *"Feed post number N"*, and N keeps climbing for as long as the
+page stays open. On a real account the DOM held 452 cards while the labels had
+already reached 965 — the labels remembered what the DOM had forgotten.
+
+So **Count first** scrolls to the bottom, waits until the highest N stops
+growing, and reports it. It is an estimate, not a guarantee: N counts what
+LinkedIn has actually served this page, and if the feed stops feeding — see
+above — the real total can still be higher. Nothing is clicked and nothing is
+deleted, so it costs you nothing to run it first.
 
 The language point matters more than it sounds. A tool that looks for the
 literal string `"Delete"` deletes exactly zero posts on a Turkish, German or
@@ -147,19 +153,25 @@ sonra **481** gönderi daha çıktı.
 | Yenilemeden sonra devam | ✗ | ✓ durum `chrome.storage`'da |
 | Türkçe arayüz | ✗ sadece "Delete" arar | ✓ önce dil bağımsız CSS sınıfı |
 | Prova modu | bazen | ✓ **varsayılan açık** — silmeden önce sayar |
-| Gerçek toplamı bilmek | ✗ | ✓ LinkedIn'in kendi sıra numarasını okur (aşağıda) |
+| Silmeden önce sayma | ✗ | ✓ LinkedIn'in kendi çizim numarasını okur, kart geri dönüşümünden etkilenmez |
 | Durdur düğmesi | bazen | ✓ sıradaki gönderide durur |
 
 ### Hiçbir şeye dokunmadan saymak
 
-LinkedIn her gönderi kartına görünmez bir etiket koyuyor: *"Akış gönderi
-numarası 965"*. Bu numara kartın **tüm listedeki** sırası — o an yüklü olanlar
-içindeki değil. Gerçek bir hesapta sayfada 452 kart varken etiketler çoktan
-965'e ulaşmıştı. Yani sayfadaki en büyük numara, toplam gönderi sayının iyi bir
-tahmini; okumak da bin tane menü açmak yerine tek bir kaydırmaya bakıyor.
+Sayfadaki kartları saymak **eksik sayar**. LinkedIn kartları geri dönüştürüyor:
+sen aşağı kaydırdıkça eskileri hafızadan atıyor, ne kadar giderse gitsin sayfada
+hep birkaç yüz kart kalıyor.
 
-**Önce say** modu tam olarak bunu yapıyor: sona kadar kaydırıyor, en büyük
-numarayı okuyor, duruyor. Hiçbir yere tıklamıyor, hiçbir şey silmiyor.
+Kartın üzerindeki görünmez etiket ise atılmıyor. LinkedIn çizdiği her karta
+*"Akış gönderi numarası N"* damgasını vuruyor ve N, sayfa açık kaldığı sürece
+büyümeye devam ediyor. Gerçek bir hesapta DOM'da 452 kart varken etiketler çoktan
+965'e ulaşmıştı — etiketler, DOM'un unuttuğunu hatırlıyordu.
+
+**Önce say** modu sona kadar kaydırıyor, en büyük N büyümeyi bırakana kadar
+bekliyor ve onu söylüyor. Bu bir **tahmin**, garanti değil: N yalnızca LinkedIn'in
+bu sayfaya gerçekten verdiklerini sayar; akış beslemeyi bırakırsa —yukarıya bak—
+gerçek toplam daha yüksek olabilir. Hiçbir yere tıklamadığı için önce bunu
+çalıştırmanın maliyeti sıfır.
 
 Dil meselesi göründüğünden önemli: `"Delete"` kelimesini arayan bir araç, Türkçe
 arayüzde **tek bir gönderi bile** silemez. Bu araç her dilde aynı olan
