@@ -34,7 +34,19 @@ Measured on a real account: the page reported "37 posts left" — after a reload
 | Survives a page reload | ✗ | ✓ state in `chrome.storage` |
 | Non-English UI | ✗ matches the word "Delete" | ✓ language-independent CSS selectors first, text as fallback |
 | Dry run | sometimes | ✓ **default on** — counts before it destroys anything |
+| Knows the real total | ✗ | ✓ reads LinkedIn's own post index (see below) |
 | Stop button | sometimes | ✓ takes effect on the next post |
+
+### Counting without touching anything
+
+LinkedIn stamps every card with a hidden label — *"Feed post number 965"* — and
+that number is the card's position in the **whole** list, not in what is
+currently loaded. On a real account the page held 452 cards while the labels
+already ran to 965. So the largest number on the page is a good estimate of your
+total, and reading it costs one scroll instead of opening a thousand menus.
+
+That is what **Count first** does: it scrolls to the bottom, reads the highest
+index, and stops. Nothing is clicked, nothing is deleted.
 
 The language point matters more than it sounds. A tool that looks for the
 literal string `"Delete"` deletes exactly zero posts on a Turkish, German or
@@ -135,7 +147,19 @@ sonra **481** gönderi daha çıktı.
 | Yenilemeden sonra devam | ✗ | ✓ durum `chrome.storage`'da |
 | Türkçe arayüz | ✗ sadece "Delete" arar | ✓ önce dil bağımsız CSS sınıfı |
 | Prova modu | bazen | ✓ **varsayılan açık** — silmeden önce sayar |
+| Gerçek toplamı bilmek | ✗ | ✓ LinkedIn'in kendi sıra numarasını okur (aşağıda) |
 | Durdur düğmesi | bazen | ✓ sıradaki gönderide durur |
+
+### Hiçbir şeye dokunmadan saymak
+
+LinkedIn her gönderi kartına görünmez bir etiket koyuyor: *"Akış gönderi
+numarası 965"*. Bu numara kartın **tüm listedeki** sırası — o an yüklü olanlar
+içindeki değil. Gerçek bir hesapta sayfada 452 kart varken etiketler çoktan
+965'e ulaşmıştı. Yani sayfadaki en büyük numara, toplam gönderi sayının iyi bir
+tahmini; okumak da bin tane menü açmak yerine tek bir kaydırmaya bakıyor.
+
+**Önce say** modu tam olarak bunu yapıyor: sona kadar kaydırıyor, en büyük
+numarayı okuyor, duruyor. Hiçbir yere tıklamıyor, hiçbir şey silmiyor.
 
 Dil meselesi göründüğünden önemli: `"Delete"` kelimesini arayan bir araç, Türkçe
 arayüzde **tek bir gönderi bile** silemez. Bu araç her dilde aynı olan

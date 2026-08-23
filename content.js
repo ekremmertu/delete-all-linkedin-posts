@@ -108,6 +108,25 @@
     return null;
   }
 
+  // LinkedIn her gönderi kartına görünmez bir sıra etiketi koyar:
+  // "Akış gönderi numarası 965" / "Feed post number 965". Bu numara kartın TÜM
+  // listedeki sırasıdır — sayfada 452 kart yüklüyken bile 965'i görebilirsin.
+  // Yani en büyük numara ≈ toplam gönderi sayısı. Saymanın en ucuz yolu.
+  function enBuyukSira() {
+    const kalip = /(?:gönderi numarası|post number|publicación número|beitrag nummer)\s*(\d+)/gi;
+    const metin = (document.body.innerText || "") + " " + etiketMetinleri();
+    let e,
+      enb = 0;
+    while ((e = kalip.exec(metin))) enb = Math.max(enb, Number(e[1]));
+    return Math.max(enb, menuDugmeleri().length);
+  }
+
+  function etiketMetinleri() {
+    return [...document.querySelectorAll("[aria-label]")]
+      .map((e) => e.getAttribute("aria-label"))
+      .join(" ");
+  }
+
   function kacisTusu() {
     document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
   }
@@ -151,13 +170,6 @@
       return { sonuc: "atlandi", key, sebep: "menu" };
     }
 
-    // Prova modu: silme, sadece "bu silinebilir" diye say ve menüyü kapat.
-    if (d.prova) {
-      kacisTusu();
-      await uyu(400);
-      return { sonuc: "sayildi", key };
-    }
-
     const tiklanacak = satir.querySelector('div[role="button"], button') || satir;
     tiklanacak.click();
 
@@ -177,11 +189,47 @@
 
   let donguAcik = false;
 
+  // Prova: hiçbir şeye dokunmadan kaç gönderi olduğunu söyler. Menüleri tek tek
+  // açmaz — sadece sona kadar kaydırır ve en büyük sıra numarasını okur.
+  async function provaSay() {
+    let onceki = -1,
+      sabit = 0;
+    while (sabit < 3) {
+      const d = await oku();
+      if (!d.calisiyor) return;
+
+      window.scrollTo(0, document.body.scrollHeight);
+      await uyu(1800);
+
+      const s = enBuyukSira();
+      if (s === onceki) sabit++;
+      else {
+        sabit = 0;
+        onceki = s;
+      }
+      d.sayilan = Math.max(d.sayilan || 0, s);
+      d.durumYazi = S.calisiyor;
+      await kaydet(d);
+    }
+    const d = await oku();
+    d.calisiyor = false;
+    d.bittiMi = true;
+    d.durumYazi = S.bitti;
+    await kaydet(d);
+    window.scrollTo(0, 0);
+  }
+
   async function calis() {
     if (donguAcik) return;
     donguAcik = true;
     try {
       let d = await oku();
+
+      if (d.prova) {
+        await provaSay();
+        return;
+      }
+
       const islenmis = new Set(d.islenmis);
 
       while (true) {
@@ -190,16 +238,15 @@
 
         const r = await birAdim(d, islenmis);
 
-        if (r.sonuc === "silindi" || r.sonuc === "sayildi") {
-          if (r.sonuc === "silindi") d.silinen++;
-          else d.sayilan++;
+        if (r.sonuc === "silindi") {
+          d.silinen++;
           d.bosYenileme = 0;
           if (r.key) islenmis.add(r.key);
           d.islenmis = [...islenmis];
           d.durumYazi = S.calisiyor;
           await kaydet(d);
 
-          const adet = d.prova ? d.sayilan : d.silinen;
+          const adet = d.silinen;
           if (adet > 0 && adet % d.yenilemeAraligi === 0 && d.sonYenileme !== adet) {
             d.sonYenileme = adet;
             await kaydet(d);
