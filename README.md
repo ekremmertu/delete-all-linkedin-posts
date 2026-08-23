@@ -59,6 +59,23 @@ literal string `"Delete"` deletes exactly zero posts on a Turkish, German or
 Spanish LinkedIn. This one keys off `li.option-delete`, which is the same in
 every language, and falls back to text only if that class ever changes.
 
+## Status — v0.1.0
+
+Read this before you trust it with a thousand posts.
+
+- **The deletion engine is proven.** The selectors and the click sequence in
+  `content.js` are the ones that deleted **1,200+ real posts** in a single night
+  on a live account, driven from a script harness. The refresh-every-N behaviour
+  and the "three empty rounds means finished" rule come from that same run.
+- **The extension shell is new.** The popup, the `chrome.storage` state and the
+  resume-after-reload path have not yet been exercised end to end. If something
+  misbehaves it will be here, not in the deleting.
+- Run **Count first** before **Delete**. It touches nothing, and it tells you
+  whether the extension can see your posts at all.
+
+Bug reports welcome — open an issue with your browser, your LinkedIn interface
+language, and what the popup showed.
+
 ---
 
 ## Install (unpacked)
@@ -176,6 +193,23 @@ gerçek toplam daha yüksek olabilir. Hiçbir yere tıklamadığı için önce b
 Dil meselesi göründüğünden önemli: `"Delete"` kelimesini arayan bir araç, Türkçe
 arayüzde **tek bir gönderi bile** silemez. Bu araç her dilde aynı olan
 `li.option-delete` sınıfını kullanıyor, metne ancak o sınıf değişirse düşüyor.
+
+## Durum — v0.1.0
+
+Bin tane gönderini emanet etmeden önce şunu oku.
+
+- **Silme motoru denenmiş.** `content.js` içindeki seçiciler ve tıklama sırası,
+  canlı bir hesapta tek gecede **1200'den fazla gerçek gönderi** silen kodun
+  aynısı. "Her N gönderide yenile" ve "üç boş turdan sonra bitti say" kuralları
+  da o koşudan çıktı.
+- **Eklenti kabuğu yeni.** Açılır pencere, `chrome.storage` durumu ve
+  yenilemeden sonra devam etme yolu henüz uçtan uca çalıştırılmadı. Bir aksilik
+  çıkacaksa silme kısmında değil, burada çıkar.
+- **Sil**'den önce **Önce say**'ı çalıştır. Hiçbir şeye dokunmaz ve eklentinin
+  gönderilerini görüp göremediğini sana söyler.
+
+Hata bildirimi bekliyorum — tarayıcını, LinkedIn arayüz dilini ve açılır
+pencerede ne gördüğünü yazarak issue aç.
 
 ## Kurulum
 
