@@ -1,18 +1,27 @@
 {
   "manifest_version": 3,
   "name": "LinkedIn Post Cleaner",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Bulk-delete your own LinkedIn posts. Survives page reloads, so it does not stop halfway. Works in any UI language.",
-  "permissions": ["storage", "tabs"],
-  "host_permissions": ["https://www.linkedin.com/*"],
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_title": "LinkedIn Post Cleaner"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.linkedin.com/in/*"],
-      "js": ["content.js"],
+      "matches": [
+        "https://www.linkedin.com/in/*"
+      ],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ]
