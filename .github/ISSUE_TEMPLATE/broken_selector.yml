@@ -1,0 +1,47 @@
+name: LinkedIn changed its markup
+description: The extension used to work and now finds nothing. Use this when a selector has probably gone stale.
+labels: ["selector", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        LinkedIn ships UI changes without warning. When it does, one of three
+        selectors in `content.js` stops matching. This template collects exactly
+        what is needed to fix it.
+
+  - type: dropdown
+    id: which
+    attributes:
+      label: Where does it stop?
+      options:
+        - It never finds the "…" menu button on a post
+        - The menu opens, but the delete row is never clicked
+        - Delete is clicked, but the confirmation modal is never confirmed
+        - Something else
+    validations:
+      required: true
+
+  - type: input
+    id: language
+    attributes:
+      label: LinkedIn interface language
+    validations:
+      required: true
+
+  - type: input
+    id: last-worked
+    attributes:
+      label: When did it last work?
+      placeholder: Worked yesterday, broke this morning
+
+  - type: textarea
+    id: html
+    attributes:
+      label: The current HTML
+      description: |
+        Right-click the element that should be clicked → Inspect → right-click the
+        highlighted node → Copy → Copy outerHTML. Paste it here.
+        This is the single most useful thing in the whole report.
+      render: html
+    validations:
+      required: true

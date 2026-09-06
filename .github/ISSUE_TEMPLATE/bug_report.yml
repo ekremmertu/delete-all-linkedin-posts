@@ -1,0 +1,77 @@
+name: Bug report — it stopped, skipped, or found nothing
+description: Something did not work. The two fields that matter most are your browser and your LinkedIn interface language.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before anything else: **which language is your LinkedIn interface in?**
+        That single field explains most reports.
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Which mode were you in?
+      options:
+        - Count first
+        - Delete
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did the popup show, and what did the page do?
+      placeholder: |
+        Counter froze at 47. The menu opened on each post but nothing was clicked.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: input
+    id: language
+    attributes:
+      label: LinkedIn interface language
+      description: Not your browser language — the language LinkedIn's own menus are in.
+      placeholder: Turkish / German / English / …
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 141 / Brave 1.7x / Edge 140
+    validations:
+      required: true
+
+  - type: input
+    id: post-count
+    attributes:
+      label: Roughly how many posts do you have?
+      description: The 400–500 boundary is where the interesting bugs live.
+      placeholder: "~900"
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output (optional)
+      description: F12 → Console, on the LinkedIn tab. Paste anything red.
+      render: text
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I was on my own activity page (`linkedin.com/in/<me>/recent-activity/all/`)
+          required: true
+        - label: I ran **Count first** and it also failed / or I noted above that counting worked
+          required: true

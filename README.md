@@ -1,249 +1,163 @@
+<div align="center">
+
+<img src="icons/icon128.png" width="72" alt="">
+
 # LinkedIn Post Cleaner
 
-Bulk-delete your own LinkedIn posts — and actually reach the end of the list.
+**Delete all your LinkedIn posts — and actually reach the end of the list.**
 
-> **Türkçe açıklama aşağıda.**
+Every other tool stops at ~500 posts and tells you it's done.
+This one reloads the page and keeps going, because that is the only thing that works.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-0a66c2.svg)](LICENSE)
+[![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-0a66c2.svg)](manifest.json)
+[![No network](https://img.shields.io/badge/network%20requests-none-1a7f37.svg)](#privacy)
+[![Türkçe](https://img.shields.io/badge/Türkçe-README-5e6a72.svg)](README.tr.md)
+
+<!-- Swap for docs/demo.gif once the screen recording is in. -->
+<img src="docs/popup.png" width="380" alt="The extension popup: 1,247 posts found, Count first mode selected">
+
+<sub>Count first mode — nothing is deleted until you switch modes yourself.</sub>
+
+</div>
 
 ---
 
-## Why another one?
+## The problem
 
-There are a handful of LinkedIn bulk-delete tools around. Most of them stop
-after a few hundred posts and report "done" while hundreds of posts are still
-sitting in your profile. That is not a bug in their click logic — it is how
-LinkedIn's activity feed behaves:
+You want a clean profile. LinkedIn gives you no bulk delete — one post, three
+clicks, a confirmation modal, a thousand times over.
 
-**After roughly 400–500 items, the feed stops loading more.** Scroll all you
-want; nothing new arrives. Any script watching the page concludes there is
-nothing left.
+So you find a script. It runs, it deletes a few hundred posts, it says **done**.
+You refresh your profile and hundreds of posts are still sitting there.
 
-The only way past it is to **reload the page and continue** — which means the
-work has to survive a reload. A snippet pasted into the DevTools console cannot
-do that: reloading the page kills the snippet. That is the whole reason this is
-an extension. Progress lives in `chrome.storage`, and the content script resumes
-by itself on every page load.
+The script wasn't lying. **LinkedIn's activity feed stops serving new items after
+roughly 400–500.** Scroll all you want; nothing more arrives. Anything watching
+the page correctly concludes there is nothing left.
 
-Measured on a real account: the page reported "37 posts left" — after a reload,
+Measured on a real account: the page reported **37 posts left**. After a reload,
 **481** were still there.
 
-### What else is different
+## The fix
 
-| | Typical tool | This one |
-|---|---|---|
-| Reloads to refill the feed | ✗ | ✓ every N posts (default 50) |
-| Survives a page reload | ✗ | ✓ state in `chrome.storage` |
-| Non-English UI | ✗ matches the word "Delete" | ✓ language-independent CSS selectors first, text as fallback |
-| Dry run | sometimes | ✓ **default on** — counts before it destroys anything |
-| Counts before deleting | ✗ | ✓ reads LinkedIn's own render index, which survives DOM recycling |
-| Stop button | sometimes | ✓ takes effect on the next post |
+Reload the page and continue. That sounds trivial until you notice what it costs:
+**a reload kills the script doing the work.** A snippet pasted into the DevTools
+console cannot survive its own page refresh — which is why every console-snippet
+tool on the internet has this bug.
 
-### Counting without touching anything
+That is the whole reason this is an extension. Progress lives in
+`chrome.storage`, the tab reloads itself every 50 posts, and the content script
+picks up where it left off on every page load.
 
-Counting the cards on the page undercounts badly. LinkedIn recycles them: it
-throws old cards out of the DOM as you scroll, so no matter how far you go the
-page holds only a few hundred at a time.
+**Proven on a live account: 1,200+ posts deleted in a single night.**
 
-The hidden label on each card does not get recycled. LinkedIn stamps every card
-it renders with *"Feed post number N"*, and N keeps climbing for as long as the
-page stays open. On a real account the DOM held 452 cards while the labels had
-already reached 965 — the labels remembered what the DOM had forgotten.
+## Install
 
-So **Count first** scrolls to the bottom, waits until the highest N stops
-growing, and reports it. It is an estimate, not a guarantee: N counts what
-LinkedIn has actually served this page, and if the feed stops feeding — see
-above — the real total can still be higher. Nothing is clicked and nothing is
-deleted, so it costs you nothing to run it first.
+Not on the Chrome Web Store yet. Takes about 30 seconds:
 
-The language point matters more than it sounds. A tool that looks for the
-literal string `"Delete"` deletes exactly zero posts on a Turkish, German or
-Spanish LinkedIn. This one keys off `li.option-delete`, which is the same in
-every language, and falls back to text only if that class ever changes.
-
-## Status — v0.1.0
-
-Read this before you trust it with a thousand posts.
-
-- **The deletion engine is proven.** The selectors and the click sequence in
-  `content.js` are the ones that deleted **1,200+ real posts** in a single night
-  on a live account, driven from a script harness. The refresh-every-N behaviour
-  and the "three empty rounds means finished" rule come from that same run.
-- **The extension shell is new.** The popup, the `chrome.storage` state and the
-  resume-after-reload path have not yet been exercised end to end. If something
-  misbehaves it will be here, not in the deleting.
-- Run **Count first** before **Delete**. It touches nothing, and it tells you
-  whether the extension can see your posts at all.
-
-Bug reports welcome — open an issue with your browser, your LinkedIn interface
-language, and what the popup showed.
-
----
-
-## Install (unpacked)
-
-Not on the Chrome Web Store. Install it yourself in about 30 seconds:
-
-1. Download this repository (**Code → Download ZIP**) and unzip it.
-2. Open `chrome://extensions` (Brave: `brave://extensions`).
-3. Turn on **Developer mode** (top right).
+1. **[Download the ZIP](../../archive/refs/heads/main.zip)** and unzip it.
+2. Open `chrome://extensions` (Brave: `brave://extensions`, Edge: `edge://extensions`).
+3. Turn on **Developer mode**, top right.
 4. Click **Load unpacked** and pick the unzipped folder.
 
 Works in Chrome, Brave, Edge and any other Chromium browser.
 
 ## Use
 
-1. Go to your own activity page:
-   `linkedin.com/in/<you>/recent-activity/all/`
+1. Go to your own activity page: `linkedin.com/in/<you>/recent-activity/all/`
 2. Click the extension icon.
-3. Leave it on **Count first** and press **Start**. Nothing is deleted — it just
-   tells you how many posts are actually there.
+3. Leave it on **Count first** and press **Start**. Nothing is deleted — it only
+   tells you how many posts are really there.
 4. If the number looks right, switch to **Delete** and press **Start** again.
 
-The tab reloads itself every 50 posts. That is intentional; do not close it.
-You can press **Stop** at any time — it finishes the post it is on and halts.
+The tab reloads itself every 50 posts. That is intentional — don't close it.
+**Stop** takes effect on the next post.
 
-Speed is roughly **8–11 seconds per post** with the default delay. A thousand
-posts takes a couple of hours. The delay is deliberate: hammering the site is
-both rude and a good way to get rate-limited.
+Speed is **8–11 seconds per post**. A thousand posts takes a couple of hours.
+The delay is deliberate: hammering the site is both rude and a fast way to get
+rate-limited.
 
-## Warnings
+> [!WARNING]
+> **Deletion is permanent.** LinkedIn has no trash bin and no undo.
+> If you might want the text later, export first:
+> Settings → Data privacy → *Get a copy of your data*.
 
-- **Deletion is permanent.** LinkedIn has no trash bin and no undo. There is no
-  way to get a post back.
-- **Export first if you might want the text later.** LinkedIn: Settings → Data
-  privacy → Get a copy of your data.
-- This automates clicks in your own browser, on your own account, using the
-  normal UI. It does not touch anyone else's content and does not use LinkedIn's
-  internal APIs. Even so, LinkedIn's User Agreement does not permit automated
-  tools — you are using this at your own risk on your own account.
+## How it compares
+
+| | Typical tool | This one |
+|---|---|---|
+| Reloads to refill the feed | ✗ | ✓ every N posts (default 50) |
+| Survives a page reload | ✗ | ✓ state in `chrome.storage` |
+| Non-English LinkedIn | ✗ matches the word "Delete" | ✓ language-independent CSS selectors, text only as fallback |
+| Dry run | sometimes | ✓ **on by default** — counts before it destroys anything |
+| Counts before deleting | ✗ | ✓ reads LinkedIn's own render index, which survives DOM recycling |
+| Stop button | sometimes | ✓ takes effect on the next post |
+
+The language point matters more than it sounds. A tool that looks for the literal
+string `"Delete"` deletes exactly **zero** posts on a Turkish, German or Spanish
+LinkedIn. This one keys off `li.option-delete`, which is identical in every
+language, and falls back to text only if that class ever changes.
+
+## Counting without touching anything
+
+Counting the cards on the page undercounts badly. LinkedIn recycles them: it
+throws old cards out of the DOM as you scroll, so however far you go the page
+holds only a few hundred at a time.
+
+The hidden label on each card does not get recycled. LinkedIn stamps every card
+it renders with *"Feed post number N"*, and N keeps climbing for as long as the
+page stays open. On a real account the DOM held **452** cards while the labels
+had already reached **965** — the labels remembered what the DOM had forgotten.
+
+So **Count first** scrolls to the bottom, waits until the highest N stops
+growing, and reports it. It is an estimate, not a guarantee: N counts what
+LinkedIn has actually served this page, and if the feed stops feeding — see above
+— the real total can be higher. Nothing is clicked and nothing is deleted, so
+running it first costs you nothing.
+
+## Privacy
+
+No servers, no analytics, no network requests of its own. Nothing leaves your
+browser. Permissions are `storage` (to remember progress across reloads) and
+`tabs` (to reload the activity page), scoped to `linkedin.com` only.
+
+This automates clicks in your own browser, on your own account, through the
+normal UI. It does not touch anyone else's content and does not call LinkedIn's
+internal APIs. Even so, LinkedIn's User Agreement does not permit automated
+tools — you use this at your own risk, on your own account.
+
+## Status
+
+- **The deletion engine is proven.** The selectors and click sequence in
+  `content.js` are the ones that deleted 1,200+ real posts in one night on a live
+  account. The reload-every-N behaviour and the "three empty rounds means
+  finished" rule both come from that run.
+- **The extension shell is younger than the engine.** The popup, the
+  `chrome.storage` state and the resume-after-reload path have had far less
+  mileage. If something misbehaves, it will be here rather than in the deleting.
+- Always run **Count first** before **Delete**. It touches nothing, and it tells
+  you whether the extension can see your posts at all.
 
 ## How it works
 
-- `content.js` — finds each post's "…" button, opens the menu, clicks the delete
-  row, confirms in the modal, then repeats. Every N posts it saves state and
-  reloads. On load, it checks whether a run is in progress and picks up where it
-  left off. When the page comes up empty it reloads and looks again; only after
-  three empty rounds does it declare the job finished.
-- `popup.js` — settings and progress. State is a single object in
+- **`content.js`** — finds each post's "…" button, opens the menu, clicks the
+  delete row, confirms in the modal, repeats. Every N posts it saves state and
+  reloads. On load it checks whether a run is in progress and resumes. When the
+  page comes up empty it reloads and looks again; only after three empty rounds
+  does it declare the job finished.
+- **`popup.js`** — settings and progress. State is a single object in
   `chrome.storage.local`, so the popup and the page always agree.
 
-No servers, no analytics, no network requests of its own. Nothing leaves the
-browser.
-
-## Maintenance
+## When it breaks
 
 LinkedIn changes its markup from time to time and that will eventually break
-this. If it does, the selectors to look at are `MENU_SECICI`, `silSatiri()` and
-`onayDugmesi()` in `content.js` — all three try a stable CSS class first and
-fall back to text. Issues and PRs welcome.
+this. The selectors to look at are `MENU_SECICI`, `silSatiri()` and
+`onayDugmesi()` in `content.js` — all three try a stable CSS class first and fall
+back to text.
 
-MIT licensed.
+Open an issue with your browser, your LinkedIn interface language, and what the
+popup showed. Pull requests welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
-# Türkçe
-
-LinkedIn'deki **kendi** gönderilerini topluca siler — ve listenin gerçekten
-sonuna kadar gider.
-
-## Neden bir tane daha?
-
-Benzeri araçlar var ama çoğu birkaç yüz gönderiden sonra "bitti" deyip duruyor;
-oysa profilde hâlâ yüzlerce gönderi duruyor. Sebep şu:
-
-**LinkedIn, yaklaşık 400–500 gönderiden sonra listeyi beslemeyi bırakıyor.**
-Ne kadar aşağı kaydırırsan kaydır yenisi gelmiyor. Sayfayı izleyen script de
-haklı olarak "bitti" sanıyor.
-
-Tek çözüm **sayfayı yenileyip devam etmek**. Ama sayfa yenilenince o sayfada
-çalışan script ölür — konsola yapıştırılan bir kod bunu yapamaz. İşte bu yüzden
-bu bir eklenti: ilerleme `chrome.storage`'da tutuluyor, sayfa her açıldığında
-kaldığı yerden devam ediyor.
-
-Gerçek bir hesapta ölçüldü: sayfa "37 gönderi kaldı" diyordu — yeniledikten
-sonra **481** gönderi daha çıktı.
-
-### Diğer farklar
-
-| | Alışılmış araç | Bu |
-|---|---|---|
-| Listeyi tazelemek için yenileme | ✗ | ✓ her 50 gönderide |
-| Yenilemeden sonra devam | ✗ | ✓ durum `chrome.storage`'da |
-| Türkçe arayüz | ✗ sadece "Delete" arar | ✓ önce dil bağımsız CSS sınıfı |
-| Prova modu | bazen | ✓ **varsayılan açık** — silmeden önce sayar |
-| Silmeden önce sayma | ✗ | ✓ LinkedIn'in kendi çizim numarasını okur, kart geri dönüşümünden etkilenmez |
-| Durdur düğmesi | bazen | ✓ sıradaki gönderide durur |
-
-### Hiçbir şeye dokunmadan saymak
-
-Sayfadaki kartları saymak **eksik sayar**. LinkedIn kartları geri dönüştürüyor:
-sen aşağı kaydırdıkça eskileri hafızadan atıyor, ne kadar giderse gitsin sayfada
-hep birkaç yüz kart kalıyor.
-
-Kartın üzerindeki görünmez etiket ise atılmıyor. LinkedIn çizdiği her karta
-*"Akış gönderi numarası N"* damgasını vuruyor ve N, sayfa açık kaldığı sürece
-büyümeye devam ediyor. Gerçek bir hesapta DOM'da 452 kart varken etiketler çoktan
-965'e ulaşmıştı — etiketler, DOM'un unuttuğunu hatırlıyordu.
-
-**Önce say** modu sona kadar kaydırıyor, en büyük N büyümeyi bırakana kadar
-bekliyor ve onu söylüyor. Bu bir **tahmin**, garanti değil: N yalnızca LinkedIn'in
-bu sayfaya gerçekten verdiklerini sayar; akış beslemeyi bırakırsa —yukarıya bak—
-gerçek toplam daha yüksek olabilir. Hiçbir yere tıklamadığı için önce bunu
-çalıştırmanın maliyeti sıfır.
-
-Dil meselesi göründüğünden önemli: `"Delete"` kelimesini arayan bir araç, Türkçe
-arayüzde **tek bir gönderi bile** silemez. Bu araç her dilde aynı olan
-`li.option-delete` sınıfını kullanıyor, metne ancak o sınıf değişirse düşüyor.
-
-## Durum — v0.1.0
-
-Bin tane gönderini emanet etmeden önce şunu oku.
-
-- **Silme motoru denenmiş.** `content.js` içindeki seçiciler ve tıklama sırası,
-  canlı bir hesapta tek gecede **1200'den fazla gerçek gönderi** silen kodun
-  aynısı. "Her N gönderide yenile" ve "üç boş turdan sonra bitti say" kuralları
-  da o koşudan çıktı.
-- **Eklenti kabuğu yeni.** Açılır pencere, `chrome.storage` durumu ve
-  yenilemeden sonra devam etme yolu henüz uçtan uca çalıştırılmadı. Bir aksilik
-  çıkacaksa silme kısmında değil, burada çıkar.
-- **Sil**'den önce **Önce say**'ı çalıştır. Hiçbir şeye dokunmaz ve eklentinin
-  gönderilerini görüp göremediğini sana söyler.
-
-Hata bildirimi bekliyorum — tarayıcını, LinkedIn arayüz dilini ve açılır
-pencerede ne gördüğünü yazarak issue aç.
-
-## Kurulum
-
-Chrome Mağazası'nda değil. Kendin kuruyorsun, yarım dakika:
-
-1. Bu depoyu indir (**Code → Download ZIP**) ve zip'ten çıkar.
-2. `chrome://extensions` adresini aç (Brave'de `brave://extensions`).
-3. Sağ üstten **Geliştirici modu**'nu aç.
-4. **Paketlenmemiş öğe yükle** de ve çıkardığın klasörü seç.
-
-## Kullanım
-
-1. Kendi gönderiler sayfana git:
-   `linkedin.com/in/<sen>/recent-activity/all/`
-2. Eklenti simgesine tıkla.
-3. **Önce say** modunda bırak, **Başlat**'a bas. Hiçbir şey silinmez, sadece
-   gerçekten kaç gönderin olduğunu söyler.
-4. Sayı doğruysa **Sil** moduna geç ve tekrar **Başlat**'a bas.
-
-Sekme her 50 gönderide kendini yeniler; bu normaldir, kapatma. İstediğin an
-**Durdur**'a basabilirsin.
-
-Hız: gönderi başına **8–11 saniye**. Bin gönderi birkaç saat sürer. Bu yavaşlık
-bilerek: siteye yüklenmek hem kabalık hem de hız sınırına takılmanın kestirme
-yolu.
-
-## Uyarılar
-
-- **Silinen geri gelmez.** LinkedIn'de çöp kutusu yok, geri alma yok.
-- **Metinler lazım olabilirse önce yedek al:** Ayarlar → Veri gizliliği →
-  Verilerinin bir kopyasını al.
-- Bu araç kendi tarayıcında, kendi hesabında, normal arayüzü kullanarak tıklama
-  yapar. Başkasının içeriğine dokunmaz, LinkedIn'in iç API'lerini kullanmaz.
-  Yine de LinkedIn kullanıcı sözleşmesi otomasyon araçlarına izin vermiyor;
-  kendi hesabında kendi sorumluluğunda kullanırsın.
-
-MIT lisanslı.
+MIT licensed · [Türkçe README](README.tr.md)

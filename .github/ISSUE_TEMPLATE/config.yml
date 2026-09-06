@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question about how it works
+    url: https://github.com/ekremmertu/delete-all-linkedin-posts/discussions
+    about: Not sure whether it fits your case? Ask here rather than opening a bug.
