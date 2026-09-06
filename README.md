@@ -55,7 +55,7 @@ picks up where it left off on every page load.
 
 Not on the Chrome Web Store yet. Takes about 30 seconds:
 
-1. **[Download the ZIP](../../archive/refs/heads/main.zip)** and unzip it.
+1. **[Download the ZIP](https://github.com/ekremmertu/delete-all-linkedin-posts/archive/refs/heads/main.zip)** and unzip it.
 2. Open `chrome://extensions` (Brave: `brave://extensions`, Edge: `edge://extensions`).
 3. Turn on **Developer mode**, top right.
 4. Click **Load unpacked** and pick the unzipped folder.

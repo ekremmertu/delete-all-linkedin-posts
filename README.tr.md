@@ -54,7 +54,7 @@ yerden devam ediyor.
 
 Chrome Mağazası'nda henüz yok. Yarım dakika sürüyor:
 
-1. **[ZIP'i indir](../../archive/refs/heads/main.zip)** ve zip'ten çıkar.
+1. **[ZIP'i indir](https://github.com/ekremmertu/delete-all-linkedin-posts/archive/refs/heads/main.zip)** ve zip'ten çıkar.
 2. `chrome://extensions` adresini aç (Brave: `brave://extensions`, Edge: `edge://extensions`).
 3. Sağ üstten **Geliştirici modu**'nu aç.
 4. **Paketlenmemiş öğe yükle** de ve çıkardığın klasörü seç.

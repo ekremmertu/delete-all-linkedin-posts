@@ -19,7 +19,7 @@ If you find something that lets this extension read or change data it should not
 — other sites, other accounts, anything leaving the browser — please report it
 privately rather than opening a public issue:
 
-**GitHub → Security → [Report a vulnerability](../../security/advisories/new)**
+**GitHub → Security → [Report a vulnerability](https://github.com/ekremmertu/delete-all-linkedin-posts/security/advisories/new)**
 
 Include what you found, how to reproduce it, and what an attacker could do with
 it. I will confirm receipt and tell you what I intend to do about it.
