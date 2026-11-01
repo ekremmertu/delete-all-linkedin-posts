@@ -5,8 +5,7 @@
 - **Host permissions:** `https://www.linkedin.com/*` only. It cannot see any
   other site.
 - **Content script:** injected only on `https://www.linkedin.com/in/*`.
-- **Permissions:** `storage` (progress across page reloads) and `tabs` (reloading
-  the activity page).
+- **Permissions:** `storage` only (progress across page reloads).
 - **Network:** none. The extension makes no requests of its own — no servers, no
   analytics, no telemetry. Nothing leaves your browser.
 

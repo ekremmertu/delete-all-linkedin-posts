@@ -66,8 +66,9 @@ function page(feed) {
     .artdeco-button--primary{background:#0a66c2!important;color:#fff;border-color:#0a66c2!important}
   </style></head><body>
     <div class="bar"><span>Simulated feed · fictional names · not LinkedIn</span><span id="left">${feed.remaining.length} posts left</span></div>
-    <main>${visible.map((p) => card(p, feed.lang)).join("") || "<p>No posts.</p>"}</main>
+    <main id="feed" style="display:none">${visible.map((p) => card(p, feed.lang)).join("") || "<p>No posts.</p>"}</main>
   <script>
+    setTimeout(() => { document.getElementById("feed").style.display = "block"; }, ${feed.renderDelayMs});
     let left = ${feed.remaining.length};
     document.addEventListener("click", async (event) => {
       const trigger = event.target.closest(".feed-shared-control-menu__trigger");
@@ -91,8 +92,9 @@ function page(feed) {
   </script></body></html>`;
 }
 
-export function makeFeed({ total, feedLimit = total, lang = "en", protectedIds = [] }) {
+export function makeFeed({ total, feedLimit = total, lang = "en", protectedIds = [], renderDelayMs = 0 }) {
   return {
+    renderDelayMs,
     feedLimit,
     lang,
     deleted: [],

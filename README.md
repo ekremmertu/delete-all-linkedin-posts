@@ -6,8 +6,8 @@
 
 **Delete all your LinkedIn posts — and actually reach the end of the list.**
 
-Every other tool stops at ~500 posts and tells you it's done.
-This one reloads the page and keeps going, because that is the only thing that works.
+Tools that never reload stop at ~500 posts and tell you they're done.
+This one reloads the page and keeps going.
 
 [![Tests](https://github.com/ekremmertu/delete-all-linkedin-posts/actions/workflows/test.yml/badge.svg)](.github/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0a66c2.svg)](LICENSE)
@@ -42,8 +42,8 @@ Measured on a real account: the page reported **37 posts left**. After a reload,
 
 Reload the page and continue. That sounds trivial until you notice what it costs:
 **a reload kills the script doing the work.** A snippet pasted into the DevTools
-console cannot survive its own page refresh — which is why every console-snippet
-tool on the internet has this bug.
+console cannot survive its own page refresh — which is why console-snippet tools
+run into this limit.
 
 That is the whole reason this is an extension. Progress lives in
 `chrome.storage`, the tab reloads itself every 50 posts, and the content script
@@ -118,8 +118,8 @@ running it first costs you nothing.
 ## Privacy
 
 No servers, no analytics, no network requests of its own. Nothing leaves your
-browser. Permissions are `storage` (to remember progress across reloads) and
-`tabs` (to reload the activity page), scoped to `linkedin.com` only.
+browser. The only permission is `storage`, to remember progress across reloads. Site
+access is limited to `linkedin.com`.
 
 This automates clicks in your own browser, on your own account, through the
 normal UI. It does not touch anyone else's content and does not call LinkedIn's

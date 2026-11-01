@@ -35,6 +35,18 @@ test("keeps going when the feed stops refilling, across reloads, to the very end
   }
 });
 
+test("waits for a slow page instead of declaring the list finished", async () => {
+  const feed = makeFeed({ total: 2, renderDelayMs: 12_000 });
+  const run = await launch(feed, { prova: false });
+  try {
+    await start(run);
+    await run.until((s) => s.silinen === 2 || s.bittiMi);
+    assert.equal(feed.remaining.length, 0);
+  } finally {
+    await run.close();
+  }
+});
+
 test("finds the delete row by text when LinkedIn's CSS class is missing (German UI)", async () => {
   const feed = makeFeed({ total: 2, lang: "de" });
   const run = await launch(feed, { prova: false });

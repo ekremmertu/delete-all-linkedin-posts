@@ -34,7 +34,7 @@ test("the extension code makes no network requests of its own", () => {
 test("the manifest asks only for what it needs", () => {
   const manifest = JSON.parse(read("manifest.json"));
   assert.equal(manifest.manifest_version, 3);
-  assert.deepEqual([...manifest.permissions].sort(), ["storage", "tabs"]);
+  assert.deepEqual([...manifest.permissions].sort(), ["storage"]);
   assert.deepEqual(manifest.host_permissions, ["https://www.linkedin.com/*"]);
   assert.deepEqual(manifest.content_scripts[0].matches, ["https://www.linkedin.com/in/*"]);
   for (const icon of Object.values(manifest.icons)) assert.ok(existsSync(join(EXTENSION_DIR, icon)), icon);

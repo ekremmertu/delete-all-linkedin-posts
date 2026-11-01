@@ -151,11 +151,15 @@
 
     if (!hedef) {
       window.scrollTo(0, document.body.scrollHeight);
-      await uyu(2500);
-      hedef = menuDugmeleri().find((b) => {
-        const k = anahtarla(b);
-        return k && !islenmisKume.has(k);
-      });
+      // Yavaş bağlantıda sayfa geç çizilebilir; boş demeden önce bekle.
+      hedef = await bekleyerekBul(
+        () =>
+          menuDugmeleri().find((b) => {
+            const k = anahtarla(b);
+            return k && !islenmisKume.has(k);
+          }),
+        40
+      );
       if (!hedef) return { sonuc: "yok" };
     }
 

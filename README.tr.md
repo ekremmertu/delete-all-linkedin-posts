@@ -6,8 +6,8 @@
 
 **LinkedIn gönderilerini topluca sil — ve listenin gerçekten sonuna kadar git.**
 
-Diğer araçlar ~500 gönderide durup "bitti" diyor.
-Bu araç sayfayı yenileyip devam ediyor, çünkü işe yarayan tek yol bu.
+Sayfayı yenilemeyen araçlar ~500 gönderide durup "bitti" diyor.
+Bu araç sayfayı yenileyip devam ediyor.
 
 [![Testler](https://github.com/ekremmertu/delete-all-linkedin-posts/actions/workflows/test.yml/badge.svg)](.github/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-0a66c2.svg)](LICENSE)
@@ -42,7 +42,7 @@ sonra **481** gönderi daha çıktı.
 
 Sayfayı yenile ve devam et. Basit görünüyor, ama bedeli şu: **yenileme, işi yapan
 script'i öldürür.** Konsola yapıştırılan bir kod kendi sayfa yenilemesinden sağ
-çıkamaz — internetteki bütün "konsola şunu yapıştır" araçlarının hatası tam olarak
+çıkamaz — "konsola şunu yapıştır" araçlarının bu sınıra takılma sebebi de
 budur.
 
 Bu yüzden bu bir eklenti. İlerleme `chrome.storage`'da duruyor, sekme her 50
@@ -116,8 +116,8 @@ gerçek toplam daha yüksek olabilir. Hiçbir yere tıklamadığı için önce b
 ## Gizlilik
 
 Sunucu yok, analitik yok, kendi ağ isteği yok. Hiçbir şey tarayıcından çıkmıyor.
-İzinler yalnızca `storage` (yenilemeler arasında ilerlemeyi hatırlamak için) ve
-`tabs` (gönderiler sayfasını yenilemek için), sadece `linkedin.com` kapsamında.
+Tek izin `storage`: yenilemeler arasında ilerlemeyi hatırlar. Site erişimi yalnız
+`linkedin.com` ile sınırlı.
 
 Bu araç kendi tarayıcında, kendi hesabında, normal arayüzü kullanarak tıklama
 yapar. Başkasının içeriğine dokunmaz, LinkedIn'in iç API'lerini kullanmaz. Yine de
