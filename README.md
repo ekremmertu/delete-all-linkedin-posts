@@ -9,15 +9,15 @@
 Every other tool stops at ~500 posts and tells you it's done.
 This one reloads the page and keeps going, because that is the only thing that works.
 
+[![Tests](https://github.com/ekremmertu/delete-all-linkedin-posts/actions/workflows/test.yml/badge.svg)](.github/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0a66c2.svg)](LICENSE)
 [![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-0a66c2.svg)](manifest.json)
 [![No network](https://img.shields.io/badge/network%20requests-none-1a7f37.svg)](#privacy)
 [![Türkçe](https://img.shields.io/badge/Türkçe-README-5e6a72.svg)](README.tr.md)
 
-<!-- Swap for docs/demo.gif once the screen recording is in. -->
-<img src="docs/popup.png" width="380" alt="The extension popup: 1,247 posts found, Count first mode selected">
+<img src="docs/demo.gif" width="760" alt="The extension deleting posts from a simulated feed, reloading when the feed runs dry, and finishing with none left">
 
-<sub>Count first mode — nothing is deleted until you switch modes yourself.</sub>
+<sub>The real extension in real Chromium, on a simulated feed with fictional names. Sped up 4×. The feed serves 4 posts at a time, so it has to reload to finish.</sub>
 
 </div>
 
@@ -132,9 +132,12 @@ tools — you use this at your own risk, on your own account.
   `content.js` are the ones that deleted 1,200+ real posts in one night on a live
   account. The reload-every-N behaviour and the "three empty rounds means
   finished" rule both come from that run.
-- **The extension shell is younger than the engine.** The popup, the
-  `chrome.storage` state and the resume-after-reload path have had far less
-  mileage. If something misbehaves, it will be here rather than in the deleting.
+- **The extension shell is tested end to end on every push.** The popup, the
+  `chrome.storage` state and resume-after-reload run in real Chromium against a
+  simulated feed with fictional names. No test ever touches linkedin.com.
+- **What the tests cannot prove is LinkedIn's live markup.** The simulated page
+  copies the structure the engine relies on. When LinkedIn changes it, the tests
+  will still pass and the real page may not — please [report it](CONTRIBUTING.md).
 - Always run **Count first** before **Delete**. It touches nothing, and it tells
   you whether the extension can see your posts at all.
 

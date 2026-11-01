@@ -32,6 +32,19 @@ Test on your own activity page: `linkedin.com/in/<you>/recent-activity/all/`
 **Always test in Count first mode.** It touches nothing. Only switch to Delete
 when you genuinely intend to lose those posts — there is no undo.
 
+## Running the tests
+
+```bash
+npm ci
+npx playwright install chromium
+npm test
+```
+
+The tests load the real extension into Chromium and run it against a simulated
+feed in `tests/helpers.mjs`. Every request is answered locally, so nothing reaches
+linkedin.com, and all names are fictional. `tests/static.test.mjs` fails if a real
+LinkedIn profile link ever enters the repo: use `<you>` in docs and examples.
+
 ## Where the fragile parts are
 
 Everything that can break lives in `content.js`:

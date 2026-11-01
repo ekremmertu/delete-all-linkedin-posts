@@ -9,14 +9,15 @@
 Diğer araçlar ~500 gönderide durup "bitti" diyor.
 Bu araç sayfayı yenileyip devam ediyor, çünkü işe yarayan tek yol bu.
 
+[![Testler](https://github.com/ekremmertu/delete-all-linkedin-posts/actions/workflows/test.yml/badge.svg)](.github/workflows/test.yml)
 [![Lisans: MIT](https://img.shields.io/badge/Lisans-MIT-0a66c2.svg)](LICENSE)
 [![Manifest V3](https://img.shields.io/badge/Chrome-Manifest%20V3-0a66c2.svg)](manifest.json)
 [![Ağ isteği yok](https://img.shields.io/badge/ağ%20isteği-yok-1a7f37.svg)](#gizlilik)
 [![English](https://img.shields.io/badge/English-README-5e6a72.svg)](README.md)
 
-<img src="docs/popup.png" width="380" alt="Eklenti paneli: 1.247 gönderi bulundu, Önce say modu seçili">
+<img src="docs/demo.gif" width="760" alt="Eklenti, kurgusal bir akıştaki gönderileri siliyor, akış bitince sayfayı yeniliyor ve hiç gönderi kalmayınca bitiriyor">
 
-<sub>Önce say modu — sen modu değiştirmeden hiçbir şey silinmez.</sub>
+<sub>Gerçek eklenti, gerçek Chromium, kurgusal isimli simülasyon akışı. 4 kat hızlandırıldı. Akış her seferinde 4 gönderi veriyor, bu yüzden bitirmek için sayfayı yenilemesi gerekiyor.</sub>
 
 </div>
 
@@ -129,9 +130,12 @@ kendi sorumluluğunda kullanırsın.
   canlı bir hesapta tek gecede 1.200'den fazla gerçek gönderi silen kodun aynısı.
   "Her N gönderide yenile" ve "üç boş turdan sonra bitti say" kuralları da o
   koşudan çıktı.
-- **Eklenti kabuğu motordan daha genç.** Açılır pencere, `chrome.storage` durumu
-  ve yenilemeden sonra devam etme yolu çok daha az yol kat etti. Bir aksilik
-  çıkacaksa silme kısmında değil, burada çıkar.
+- **Eklenti kabuğu her gönderimde uçtan uca test ediliyor.** Açılır pencere,
+  `chrome.storage` durumu ve yenilemeden sonra devam etme; gerçek Chromium'da,
+  kurgusal isimli simülasyon akışında çalışır. Hiçbir test linkedin.com'a dokunmaz.
+- **Testlerin kanıtlayamadığı şey LinkedIn'in canlı sayfa yapısı.** Simülasyon,
+  motorun dayandığı yapıyı taklit eder. LinkedIn yapıyı değiştirirse testler geçer
+  ama gerçek sayfa çalışmayabilir; [lütfen bildir](CONTRIBUTING.md).
 - **Sil**'den önce her zaman **Önce say**'ı çalıştır. Hiçbir şeye dokunmaz ve
   eklentinin gönderilerini görüp göremediğini sana söyler.
 

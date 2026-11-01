@@ -202,6 +202,9 @@
       window.scrollTo(0, document.body.scrollHeight);
       await uyu(1800);
 
+      d.calisiyor = (await oku()).calisiyor;
+      if (!d.calisiyor) return;
+
       const s = enBuyukSira();
       if (s === onceki) sabit++;
       else {
@@ -239,6 +242,10 @@
 
         const r = await birAdim(d, islenmis);
 
+        // Bir adım birkaç saniye sürer. Bu sırada basılan Durdur'u ezmemek için
+        // durumu kaydetmeden önce taze oku.
+        d.calisiyor = (await oku()).calisiyor;
+
         if (r.sonuc === "silindi") {
           d.silinen++;
           d.bosYenileme = 0;
@@ -268,8 +275,8 @@
         }
 
         // "yok" — sayfada işlenmemiş gönderi kalmadı. LinkedIn beslemeyi
-        // bırakmış olabilir; yenileyip tekrar bakıyoruz. İki yenileme üst üste
-        // boş gelirse gerçekten bitmiştir.
+        // bırakmış olabilir; yenileyip tekrar bakıyoruz. Üç tur üst üste boş
+        // gelirse gerçekten bitmiştir.
         d.bosYenileme++;
         await kaydet(d);
         if (d.bosYenileme >= 3) {
